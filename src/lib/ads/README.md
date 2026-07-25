@@ -64,9 +64,10 @@ Google exposes less than you'd hope; these are deliberate, commented gaps:
 
 ## Credentials
 
-Copy `.env.example` → `.env.local` and fill in the five values. The developer
-token comes from a Google Ads **manager (MCC)** account and needs Google
-approval; the refresh token is minted once via the OAuth consent flow.
+Copy `.env.example` → `.env.local` and fill in the five values. Full runbook —
+written so a headless agent can execute it, with the human-only steps marked —
+lives at [`docs/google-ads-credentials.md`](../../../docs/google-ads-credentials.md).
+The refresh token is minted with `npx tsx scripts/mint-refresh-token.ts`.
 
 ## Try it
 
