@@ -122,6 +122,48 @@ export const basePack: NichePack = {
       },
     },
     {
+      id: "base.broad-match-share",
+      title: "Broad match dominating spend without verified-outcome feedback",
+      category: "wasted-spend",
+      evaluate: ({ snapshot }): Finding[] => {
+        const keywords = snapshot.campaigns
+          .filter((c) => c.enabled)
+          .flatMap((c) => c.keywords);
+        const totalKwCost = keywords.reduce((a, k) => a + k.cost, 0);
+        if (totalKwCost <= 0) return [];
+        const broadCost = keywords
+          .filter((k) => k.matchType === "broad")
+          .reduce((a, k) => a + k.cost, 0);
+        const share = broadCost / totalKwCost;
+        if (share < 0.5) return [];
+
+        const hasVerifiedFeedback = snapshot.conversionActions.some(
+          (a) => a.primaryForBidding && a.verifiedValue,
+        );
+        if (hasVerifiedFeedback) return []; // broad + real outcome data is a valid strategy
+
+        return [
+          {
+            ruleId: "base.broad-match-share",
+            title: `Broad match is ${Math.round(share * 100)}% of keyword spend`,
+            severity: share > 0.75 ? "high" : "medium",
+            category: "wasted-spend",
+            confidence: 0.7,
+            summary:
+              "Broad match hands query selection to Google. That's only safe when verified business outcomes feed the bid strategy — otherwise Google expands toward whatever converts cheapest, not what pays.",
+            evidence: [
+              `Broad-match keywords: ${money(broadCost)} of ${money(totalKwCost)} keyword spend.`,
+              "No primary conversion action is a verified outcome.",
+            ],
+            recommendation:
+              "Tighten core terms to phrase/exact, or wire verified-outcome import first and only then let broad match run against real value data.",
+            nicheRationale:
+              "Broad-match-plus-Smart-Bidding is the platform's default push — and the fastest route to regressing to the mean when the feedback loop is raw leads.",
+          },
+        ];
+      },
+    },
+    {
       id: "base.thin-data-autobidding",
       title: "Smart Bidding on thin conversion data",
       category: "bidding",

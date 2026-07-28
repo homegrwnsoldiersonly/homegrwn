@@ -18,7 +18,7 @@ import {
   termsMatching,
 } from "../helpers";
 
-const HOME_SERVICE_JUNK_SIGNALS = [
+export const HOME_SERVICE_JUNK_SIGNALS = [
   "diy",
   "how to",
   "jobs",
@@ -238,10 +238,14 @@ export const homeServicesPack: NichePack = {
       id: "hs.junk-terms",
       title: "Spend on DIY / research / job-seeker searches",
       category: "wasted-spend",
-      evaluate: ({ snapshot }): Finding[] => {
+      evaluate: ({ snapshot, pack }): Finding[] => {
         const terms = allSearchTerms(snapshot);
         if (terms.length === 0) return [];
-        const junk = termsMatching(terms, HOME_SERVICE_JUNK_SIGNALS);
+        // Signals come from the pack's conversion model so trade sub-packs
+        // extend the junk list by overriding data — no rule code needed.
+        const signals =
+          pack.conversionModel?.junkLeadSignals ?? HOME_SERVICE_JUNK_SIGNALS;
+        const junk = termsMatching(terms, signals);
         const junkCost = sumCost(junk);
         if (junk.length === 0 || junkCost <= 0) return [];
         const monthlyWaste = junkCost * (30 / snapshot.windowDays);

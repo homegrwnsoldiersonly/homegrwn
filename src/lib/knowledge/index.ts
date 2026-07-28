@@ -10,11 +10,22 @@ import { auditAccount, resolvePack } from "./engine";
 import { basePack } from "./packs/base";
 import { personalInjuryPack } from "./packs/legal-personal-injury";
 import { homeServicesPack } from "./packs/home-services";
+import {
+  piCarAccidentPack,
+  piMassTortPack,
+  piTruckAccidentPack,
+} from "./packs/legal-pi-subniches";
+import { hvacPack, roofingPack } from "./packs/home-services-subniches";
 
 export const PACKS: Record<string, NichePack> = {
   [basePack.id]: basePack,
   [personalInjuryPack.id]: personalInjuryPack,
   [homeServicesPack.id]: homeServicesPack,
+  [piCarAccidentPack.id]: piCarAccidentPack,
+  [piTruckAccidentPack.id]: piTruckAccidentPack,
+  [piMassTortPack.id]: piMassTortPack,
+  [hvacPack.id]: hvacPack,
+  [roofingPack.id]: roofingPack,
 };
 
 /** Packs a user would actually pick for an account (base is abstract). */
@@ -30,46 +41,55 @@ export function audit(
   return auditAccount(snapshot, packId, PACKS);
 }
 
-const LEGAL_HINTS = [
-  "accident",
-  "injury",
-  "law",
-  "legal",
-  "attorney",
-  "tort",
-  "malpractice",
-];
-const LOCAL_SERVICE_HINTS = [
-  "hvac",
-  "plumb",
-  "electric",
-  "roof",
-  "septic",
-  "solar",
-  "pest",
-  "landscap",
-  "garage",
-  "cleaning",
-  "restoration",
-  "heating",
-  "cooling",
+/**
+ * Ordered hint table, most specific first: a "truck accident" account must
+ * route to the truck pack before the generic "accident" hint catches it.
+ */
+const PACK_HINTS: Array<{ hints: string[]; packId: string }> = [
+  { hints: ["truck", "18 wheeler", "semi"], packId: "legal-pi-truck-accident" },
+  {
+    hints: ["mass tort", "mass-tort", "class action", "claimant"],
+    packId: "legal-pi-mass-tort",
+  },
+  {
+    hints: ["car accident", "auto accident", "car-accident", "auto-accident"],
+    packId: "legal-pi-car-accident",
+  },
+  { hints: ["hvac", "heating", "cooling", "air condition"], packId: "hs-hvac" },
+  { hints: ["roof"], packId: "hs-roofing" },
+  {
+    hints: ["accident", "injury", "law", "legal", "attorney", "tort", "malpractice"],
+    packId: "legal-personal-injury",
+  },
+  {
+    hints: [
+      "plumb",
+      "electric",
+      "septic",
+      "solar",
+      "pest",
+      "landscap",
+      "garage",
+      "cleaning",
+      "restoration",
+    ],
+    packId: "home-services",
+  },
 ];
 
 /**
  * Suggest a pack for an account from its declared sub-niche (and, failing
- * that, its name). Returns null when there's no confident match — the UI
- * should then require an explicit operator choice rather than guessing.
+ * that, its name). Most specific hint wins. Returns null when there's no
+ * confident match — the UI should then require an explicit operator choice
+ * rather than guessing.
  */
 export function suggestPackId(snapshot: AccountSnapshot): string | null {
   const haystack = [snapshot.context?.subNiche, snapshot.accountName]
     .filter(Boolean)
     .join(" ")
     .toLowerCase();
-  if (LEGAL_HINTS.some((h) => haystack.includes(h))) {
-    return "legal-personal-injury";
-  }
-  if (LOCAL_SERVICE_HINTS.some((h) => haystack.includes(h))) {
-    return "home-services";
+  for (const { hints, packId } of PACK_HINTS) {
+    if (hints.some((h) => haystack.includes(h))) return packId;
   }
   return null;
 }

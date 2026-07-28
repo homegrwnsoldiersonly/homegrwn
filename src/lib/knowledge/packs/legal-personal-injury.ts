@@ -20,7 +20,7 @@ import {
 } from "../helpers";
 
 /** Terms that signal the wrong practice area or a worthless click in PI. */
-const PI_JUNK_SIGNALS = [
+export const PI_JUNK_SIGNALS = [
   "free",
   "pro bono",
   "salary",
@@ -108,10 +108,13 @@ export const personalInjuryPack: NichePack = {
       id: "pi.junk-search-terms",
       title: "Spend on wrong-practice-area / junk search terms",
       category: "wasted-spend",
-      evaluate: ({ snapshot }): Finding[] => {
+      evaluate: ({ snapshot, pack }): Finding[] => {
         const terms = allSearchTerms(snapshot);
         if (terms.length === 0) return [];
-        const junk = termsMatching(terms, PI_JUNK_SIGNALS);
+        // Signals come from the pack's conversion model, so sub-niche packs
+        // extend the junk list by overriding data — no rule code needed.
+        const signals = pack.conversionModel?.junkLeadSignals ?? PI_JUNK_SIGNALS;
+        const junk = termsMatching(terms, signals);
         const junkCost = sumCost(junk);
         if (junk.length === 0 || junkCost <= 0) return [];
         const monthlyWaste = junkCost * (30 / snapshot.windowDays);
