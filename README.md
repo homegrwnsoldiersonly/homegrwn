@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# HOMEGRWN — homegrwnagency.com
 
-## Getting Started
+Redesigned marketing site for HOMEGRWN, rebuilt from Framer into Next.js + Tailwind CSS, ready to deploy on Vercel.
 
-First, run the development server:
+## Quick start
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev      # http://localhost:3000
+npm run build    # production build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Two things to plug in
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Both live in **`src/lib/site.ts`**:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Calendly** — replace `calendlyUrl` with your real scheduling link. The booking section at `#book` embeds it automatically with brand colors.
+2. **Vimeo** — set `vimeoVideoId` to the numeric ID from your video URL (`vimeo.com/123456789` → `"123456789"`). The VSL section stays hidden until an ID is set.
 
-## Learn More
+## Logo
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The wordmark + sprout mark is recreated in code at `src/components/Logo.tsx` so it scales crisply at any size. To use your original logo file instead, drop it into `public/` and swap the component contents for an `<Image>`.
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Push this repo to GitHub (already done if you're reading this on GitHub).
+2. In [Vercel](https://vercel.com/new), import the repo — Next.js is auto-detected, no config needed.
+3. Add the custom domain `homegrwnagency.com` in the Vercel project settings and point your DNS at Vercel.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Structure
+
+- `src/app/page.tsx` — section order for the landing page
+- `src/components/sections/` — one file per section (hero, stats, problem, services, process, guarantee, FAQ, booking, footer)
+- `src/app/globals.css` — brand tokens (black/white/grey + green) and all CSS animations (scroll reveals, marquee, glows, FAQ accordion)
+- `src/lib/site.ts` — central config (links, email, tagline)
