@@ -54,7 +54,7 @@ const ROWS: Row[] = [
   },
   {
     aspect: "What it changes",
-    generic: "Bids, budgets, targeting — often silently.",
+    generic: "Bids, budgets, targeting — with no approval step.",
     agency: "Whatever the plan says this month.",
     driver:
       "Concrete change-sets you apply: negatives CSV in two risk tiers today. Broader classes as rungs ship.",
