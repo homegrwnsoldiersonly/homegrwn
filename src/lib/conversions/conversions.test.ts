@@ -3,7 +3,6 @@ import { parseCsv, parseCsvRecords } from "./csv";
 import {
   buildImportPlan,
   normalizeConversionTime,
-  parseOutcomeCsv,
   planFromCsv,
 } from "./build";
 import type { OutcomeRow } from "./types";

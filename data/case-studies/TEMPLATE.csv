@@ -1,0 +1,39 @@
+file,column,required,type,accepted_headers,example,notes
+campaigns.csv,campaign,yes,text,campaign | campaign_name | name,Search — AC Repair,Campaign name. Joins keywords.csv and search_terms.csv.
+campaigns.csv,campaign_id,no,text,campaign_id | id,search-ac-repair,Optional stable id. Defaults to a slug of the name.
+campaigns.csv,campaign_state,no,text,campaign_state | campaign_status | status | state,Enabled,Enabled / Paused / Removed. Anything not paused/removed/ended counts as enabled.
+campaigns.csv,campaign_type,no,text,campaign_type | type | channel | advertising_channel_type,Search,"Search, Performance Max, Display, Video, Shopping, Local Services, Demand Gen."
+campaigns.csv,bid_strategy_type,no,text,bid_strategy_type | bid_strategy | bidding_strategy | bidding_strategy_type,Maximize conversions,"Manual CPC, Maximize clicks, Maximize conversions, Target CPA, Target ROAS, Target impression share."
+campaigns.csv,budget,no,money,budget | daily_budget | budget_amount | avg_daily_budget,$107.00,Average daily budget.
+campaigns.csv,clicks,no,number,clicks,420,Clicks in the window.
+campaigns.csv,cost,no,money,cost | spend | cost_usd,"$3,200.00",Spend in the window. Currency symbols and thousands separators are stripped.
+campaigns.csv,conversions,no,number,conversions | conv | all_conv,44,Conversions in the window.
+campaigns.csv,impressions,no,number,impressions | impr | impressions_count,"15,000",Impressions in the window.
+campaigns.csv,conv_value,no,money,conv_value | conversion_value | conversions_value | all_conv_value | total_conv_value,0.00,Conversion value in the window.
+campaigns.csv,locations,no,list,locations | location | geo | targeted_locations,"Phoenix, AZ; Mesa, AZ","Targeted locations, separated by ; or |. e.g. ""Phoenix, AZ; Mesa, AZ""."
+campaigns.csv,radius_mi,no,list,radius_mi | radius | radius_miles | radii_mi,60,"Radius targets in miles, separated by ; or |."
+campaigns.csv,national,no,bool,national | is_national,no,yes/true when the campaign targets a whole country.
+campaigns.csv,brand,no,bool,brand | is_brand | brand_campaign,no,"yes/true for a dedicated brand campaign. Defaults to name contains ""brand""."
+keywords.csv,campaign,yes,text,campaign | campaign_name,Search — AC Repair,Campaign name — must match campaigns.csv.
+keywords.csv,campaign_id,no,text,campaign_id,search-ac-repair,Optional; used for the join when present in both files.
+keywords.csv,keyword,yes,text,keyword | keyword_text | search_keyword | text,ac repair phoenix,Keyword text.
+keywords.csv,match_type,no,text,match_type | match | keyword_match_type,Phrase match,"Exact / Phrase / Broad (""Exact match"" also accepted)."
+keywords.csv,clicks,no,number,clicks,260,Clicks in the window.
+keywords.csv,cost,no,money,cost | spend | cost_usd,"$2,100.00",Spend in the window. Currency symbols and thousands separators are stripped.
+keywords.csv,conversions,no,number,conversions | conv | all_conv,30,Conversions in the window.
+keywords.csv,quality_score,no,number,quality_score | qs | qual_score,7,Optional 1–10 quality score.
+search_terms.csv,campaign,yes,text,campaign | campaign_name,Search — AC Repair,Campaign name — must match campaigns.csv.
+search_terms.csv,campaign_id,no,text,campaign_id,search-ac-repair,Optional; used for the join when present in both files.
+search_terms.csv,search_term,yes,text,search_term | query | search_query | term,hvac technician jobs phoenix,The matched search term.
+search_terms.csv,clicks,no,number,clicks,24,Clicks in the window.
+search_terms.csv,cost,no,money,cost | spend | cost_usd,$180.00,Spend in the window. Currency symbols and thousands separators are stripped.
+search_terms.csv,conversions,no,number,conversions | conv | all_conv,0,Conversions in the window.
+conversions.csv,conversion_action,yes,text,conversion_action | conversion_action_name | action | name,Website Form,Conversion action name.
+conversions.csv,category,no,text,category | conversion_category | conversion_action_category,Submit lead form,"Submit lead form, Phone call lead, Purchase, Qualified lead, Converted lead, Book appointment…"
+conversions.csv,source,no,text,source | conversion_source | type | conversion_action_type,Website,"Website, Calls from ads, Import from clicks, Offline…"
+conversions.csv,counting,no,text,counting | count | counting_type,One,One / Every. Defaults to Every (the riskier assumption) when blank.
+conversions.csv,primary,no,bool,primary | primary_for_bidding | include_in_conversions | primary_for_goal,yes,yes/no — feeds the bid strategy. Defaults to yes when the column is absent.
+conversions.csv,call_duration_sec,no,number,call_duration_sec | call_length | min_call_duration,60,"Optional minimum call length counted, in seconds."
+conversions.csv,verified,no,bool,verified | verified_value | is_verified,no,Optional override: yes when the value is a real business outcome.
+conversions.csv,conversions,no,number,conversions | conv | count_in_window | all_conv,40,Conversions in the window for this action.
+conversions.csv,conv_value,no,money,conv_value | conversion_value | value | all_conv_value,0.00,Conversion value in the window for this action.

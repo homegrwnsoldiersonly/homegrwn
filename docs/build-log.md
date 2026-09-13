@@ -162,3 +162,80 @@ carried forward. See `docs/content/claims.md`.
 token can never be picked up inside this repo. It will show as failed in `/mcp` until
 the HOMEGRWN MCC + token exist and `HOMEGRWN_GOOGLE_ADS_*` are exported in the shell.
 Guardrails start tighter than ECF's (dry-run required, $250/day budget cap, +25% bid cap).
+
+## 2026-09-13 — QA close-out (final verification, build owner)
+
+QA totals: **56 findings** across the three surfaces; 32 fixed in the fix
+phase, **24 low-severity items deferred** (listed under *Deferred* below).
+One non-low item surfaced during this verification pass and was fixed here:
+
+- **`/book` reported success for undelivered leads.** `src/app/agency/book/actions.ts`
+  validated, returned `status: "success"`, and sent the lead nowhere — the
+  exact failure `src/lib/intake/deliver.ts` forbids. It now mirrors
+  `applyAction.ts`: honeypot → per-client rate limit (5 burst, 1/min) →
+  validation → `deliverIntake({ kind: "agency-book" })` to `BOOK_WEBHOOK_URL`;
+  delivery failure or an unset URL returns the error state with the visitor's
+  values intact and the direct email. `StrategyCallState.error` gained an
+  optional `message`, `StrategyCallForm` renders it, `.env.example` lists
+  `BOOK_WEBHOOK_URL`. **Set `BOOK_WEBHOOK_URL` and `APPLY_WEBHOOK_URL` before
+  either surface takes traffic** — until then both forms show the honest
+  "couldn't send" state, never a fake confirmation.
+
+Verified (this pass, in order): `next typegen && tsc --noEmit` clean;
+`eslint .` 0 errors / 0 warnings; `vitest run` 14 files, 162/162; `next build`
+32 static pages + 4 SSG legal + 6 SSG niche + 2 OG images (Turbopack, no
+warnings). `next start -p 3123` sweep with `APP_PASSWORD` + `CRON_SECRET` set:
+all 38 routes 200 (`?surface=` per surface; dashboard with a minted
+`hg_app_session` cookie), zero "Application error" / "BUILDER REPLACES" /
+"lorem"; OG images 1200×630 `image/png` (61 KB / 61 KB) served through the
+proxy pass-through; `/changes/pi-001/export` is `text/csv`; `/login` with a
+session → 307 `/`, without → 200 form; gated routes without a session → 307
+`/login`; `/api/cron/audit` 401 without bearer, 200 JSON with it; `/agency/…`
+and `/app/…` typed directly → 307 to the clean path; per-surface 404s render
+in their own chrome; robots.txt and sitemap.xml are host-aware (agency host
+18 URLs, ads host 6, app host `Disallow: /` + empty sitemap, neutral host
+both = 24). Playwright pass at 375 and 1440 on 15 representative routes: no
+horizontal scroll, no element past the viewport edge, no broken images, no
+console errors, only Inter + Geist Mono. Server killed; the `.data/` audit
+history the cron smoke run wrote (gitignored) was removed.
+
+Gate behaviour to know: under `next start` (`NODE_ENV=production`) the
+dashboard and cron route **fail closed** — without `APP_PASSWORD` `/login`
+renders "Dashboard locked" and gated routes 307 there; without `CRON_SECRET`
+the cron route returns 503. The "gate off → 307 home" convenience exists only
+under `next dev`. Deliberate; the docblocks that imply otherwise are deferred
+item 12.
+
+### Deferred (low severity, 24)
+
+Tap targets (WCAG 2.5.8 minimum is 24 px; brand target is 44 px on touch):
+1. Nav wordmark link (`Logo` → `SiteNav`) hit area is text height only: 190×19 at 375, 109×14 / 207×17 in the dashboard rail. Pad the `<Link>` to a ≥44 px row.
+2. Footer bottom-bar cross-surface links ("Ads Driver", "Dashboard", "HOMEGRWN Agency") are 16 px-tall `text-xs` targets (`SiteFooter.tsx` bottom row; the column links were fixed to 44 px rows).
+3. Breadcrumb / back links are 17 px tall: "Part of Personal injury" (`LegalHero.tsx:30`), "Case studies" on the septic study, "← Accounts" (`app/accounts/[id]/page.tsx:56`).
+4. Dashboard `TenantSwitcher` "Switch" button measures 22×14 (progressive-enhancement control at `TenantSwitcher.tsx:143`); give it the select's height or hide it once JS owns `change`.
+5. Dashboard "All accounts →", "All findings →", "Review change-set →" and every `FindingRow` title link are 20 px tall; make the row the target.
+6. Dashboard pack/category `<select>`s are 34 px tall (`FindingsFilters.tsx:72`); the severity chips already sit in 44 px wrappers.
+7. The closed mobile `<details>` menu's links report non-zero boxes (4×59) to the scanner — a `<details>` measurement artifact; confirm in a real Safari pass that they are not Tab-reachable while closed.
+
+Performance / hygiene:
+8. Dashboard rail `<Link>`s prefetch every dynamic route twice per page load (two `_rsc` keys) and `/accounts/[id]` prefetches all 7 pack variants — 11–28 RSC requests per visit; Playwright `networkidle` never settles. Add `prefetch={false}` to `NavLinks` and the pack switcher.
+9. Footer lockup `<Image sizes="Npx">` emits a full-width srcset, so browsers may request `w=3840` for a 468 px raster (the optimizer returns the original; no upscale, but the URL is misleading). Use `unoptimized` or drop `sizes` (`Logo.tsx`).
+10. Honeypot wrappers use `absolute -left-[9999px]` (`StrategyCallForm.tsx:203`, `ApplyForm.tsx:245`); overflow scanners flag them. The clip-rect pattern has no layout footprint.
+11. `sitemap.ts` stamps `lastModified = new Date()` on every request, so every URL claims "modified now". Drop it or derive from content.
+12. Docblocks in `app/_lib/auth.ts` and `api/cron/audit/route.ts` say local `next start` runs are allowed with the secrets unset; only `next dev` is. Correct the comments (behaviour is right).
+13. `CASE_STUDY_SLUGS` in `src/lib/seo.ts` is hand-maintained — a new case study needs two edits until a registry exists.
+14. `SURFACE_HOSTS` still carries the four legacy `homegrwnagency.com` hosts; drop after 2026-10-17.
+15. 404 pages emit a browser console error ("Failed to load resource: 404") — inherent to a correct 404 status; noise only.
+16. `/book` is a dynamic route because it reads `searchParams` for `?trade=`; a client-side preselect would let it prerender.
+
+Brand / content:
+17. Ads Driver home uses `lime-300` on the four `NichePacks` "you handle" lines (`NichePacks.tsx:70`) alongside `lime-500` — within brand (soft accent) but two lime tints in one viewport; consider one.
+18. Dashboard severity styling uses two reds (`red-300` text on `red-500`/`red-400` chrome, `severity.tsx:15-25`); brand allows "a restrained red" — consolidate to one.
+19. The word "testimonials" appears in `ProofPlaceholder` / `LegalProof` copy on every agency page ("no stock-name testimonials") — a literal-scanner false positive; reword if compliance greps keep tripping on it.
+20. Septic case study: `YOUTUBE_EMBED_URL` is `undefined` (`septic-google-ads/page.tsx:43`) → poster only until the embed URL is supplied.
+21. Vector logo still pending; the raster lockup ships in the footer (documented in `docs/brand.md`).
+22. Privacy policy remains the counsel-pending draft (`PrivacyPolicy.tsx`, `TODO(counsel)`), badged as such on both public surfaces.
+
+Operational:
+23. `BOOK_WEBHOOK_URL` / `APPLY_WEBHOOK_URL` are set in no environment yet; both forms render the honest "couldn't send" state until the n8n intake workflows exist.
+24. Dashboard auth is a single shared `APP_PASSWORD` with per-instance rate limiting; per-user auth and a KV-backed limiter arrive with the first manager-linked client (`docs/site-architecture.md` → Tenant model).

@@ -1,0 +1,14 @@
+export { NicheCard } from "./NicheCard";
+export type { NicheCardProps } from "./NicheCard";
+export { NicheHero } from "./NicheHero";
+export type { NicheHeroProps } from "./NicheHero";
+export { NicheIcon, NICHE_ICON_NAMES } from "./NicheIcon";
+export type { NicheIconProps } from "./NicheIcon";
+export { NicheOffer } from "./NicheOffer";
+export type { NicheOfferProps } from "./NicheOffer";
+export { NichePains } from "./NichePains";
+export type { NichePainsProps } from "./NichePains";
+export { NicheRelated } from "./NicheRelated";
+export type { NicheRelatedProps } from "./NicheRelated";
+export { NicheSteps } from "./NicheSteps";
+export type { NicheStepsProps } from "./NicheSteps";

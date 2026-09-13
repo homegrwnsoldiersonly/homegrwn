@@ -3,6 +3,21 @@
     "typeui": {
       "type": "http",
       "url": "https://mcp.typeui.sh/mcp"
+    },
+    "google-ads": {
+      "command": "/Users/nathanunger/.local/bin/mcp-google-ads",
+      "args": [],
+      "env": {
+        "GOOGLE_ADS_DEVELOPER_TOKEN": "${HOMEGRWN_GOOGLE_ADS_DEVELOPER_TOKEN}",
+        "GOOGLE_ADS_LOGIN_CUSTOMER_ID": "${HOMEGRWN_GOOGLE_ADS_LOGIN_CUSTOMER_ID}",
+        "GOOGLE_ADS_CUSTOMER_ID": "${HOMEGRWN_GOOGLE_ADS_CUSTOMER_ID}",
+        "GOOGLE_ADS_CREDENTIALS_PATH": "/Users/nathanunger/.mcp-google-ads-homegrwn/credentials.json",
+        "GOOGLE_ADS_TOKEN_PATH": "/Users/nathanunger/.mcp-google-ads-homegrwn/token.json",
+        "GOOGLE_ADS_AUDIT_LOG": "/Users/nathanunger/.mcp-google-ads-homegrwn/audit.log",
+        "GOOGLE_ADS_REQUIRE_DRY_RUN": "true",
+        "GOOGLE_ADS_MAX_DAILY_BUDGET": "250.0",
+        "GOOGLE_ADS_MAX_BID_INCREASE_PCT": "25"
+      }
     }
   }
 }

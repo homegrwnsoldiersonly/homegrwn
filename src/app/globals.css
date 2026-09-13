@@ -1,26 +1,243 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+ * HOMEGRWN design tokens — Tailwind 4 @theme.
+ * Source of truth: docs/brand.md. TS mirror: src/lib/brand/tokens.ts.
+ * Keep the three in sync; builders use the token NAMES below, never raw hex.
+ */
+
+@theme {
+  /* ── Palette ──────────────────────────────────────────────────────────
+   * The brand has ONE saturated color (lime-500). Every default Tailwind hue
+   * that could smuggle in a blue/purple/green is removed so `bg-blue-500`
+   * simply does not exist. gray/orange/yellow/amber were kept for the legacy
+   * /app cockpit; it was restyled 2026-09-13 (src/app/app/ui.tsx deleted), so
+   * they are reset too. Brand tokens only, on every surface.
+   */
+  --color-blue-*: initial;
+  --color-gray-*: initial;
+  --color-orange-*: initial;
+  --color-yellow-*: initial;
+  --color-amber-*: initial;
+  --color-sky-*: initial;
+  --color-cyan-*: initial;
+  --color-indigo-*: initial;
+  --color-violet-*: initial;
+  --color-purple-*: initial;
+  --color-fuchsia-*: initial;
+  --color-pink-*: initial;
+  --color-rose-*: initial;
+  --color-teal-*: initial;
+  --color-emerald-*: initial;
+  --color-green-*: initial;
+  --color-lime-*: initial;
+  --color-slate-*: initial;
+  --color-zinc-*: initial;
+  --color-neutral-*: initial;
+  --color-stone-*: initial;
+  --color-red-*: initial;
+
+  /* Brand tokens (docs/brand.md) */
+  --color-ink-950: #0d0d0d;
+  --color-charcoal-900: #1d1f13;
+  --color-charcoal-700: #404245;
+  --color-slate-800: #262c37;
+  --color-forest-800: #14281b;
+  --color-lime-500: #a9ed42;
+  --color-lime-300: #dbff94;
+  --color-lime-100: #f0ffd1;
+  --color-sage-100: #eaf0dd;
+  --color-paper-50: #f7f8f5;
+  --color-white: #ffffff;
+  --color-grey-200: #d6d6d6;
+
+  /* Restrained red — negative deltas on the dashboard only. Not an accent. */
+  --color-red-300: #f0a49b;
+  --color-red-400: #e57a6f;
+  --color-red-500: #d8564b;
+
+  /* ── Type scale: 12 / 14 / 16 / 18 / 22 / 28 / 36 / 48 / 64 / 88 ─────
+   * Display sizes (2xl+) are fluid via clamp() and carry tight leading.
+   */
+  --text-*: initial;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1rem;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.25rem;
+  --text-base: 1rem;
+  --text-base--line-height: 1.5rem;
+  --text-md: 1.125rem;
+  --text-md--line-height: 1.65;
+  --text-lg: 1.375rem;
+  --text-lg--line-height: 1.45;
+  --text-xl: 1.75rem;
+  --text-xl--line-height: 1.3;
+  --text-2xl: clamp(2rem, 1.6rem + 1.2vw, 2.25rem);
+  --text-2xl--line-height: 1.15;
+  --text-3xl: clamp(2.25rem, 1.7rem + 2vw, 3rem);
+  --text-3xl--line-height: 1.05;
+  --text-4xl: clamp(2.75rem, 2rem + 3.2vw, 4rem);
+  --text-4xl--line-height: 1;
+  --text-5xl: clamp(3.25rem, 2.2rem + 4.5vw, 5.5rem);
+  --text-5xl--line-height: 0.95;
+
+  /* Tracking */
+  --tracking-display: -0.02em;
+  --tracking-eyebrow: 0.14em;
+  --tracking-wordmark: 0.18em;
+
+  /* Motion: 150–200ms ease-out only (docs/brand.md, dashboard rule) */
+  --ease-brand: cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-marquee: marquee var(--marquee-duration, 40s) linear infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* Shadows / glows */
+  --shadow-glow-lime: 0 0 48px 0 rgb(169 237 66 / 0.22);
+  --shadow-glass: inset 0 1px 0 0 rgb(255 255 255 / 0.08),
+    0 24px 48px -24px rgb(0 0 0 / 0.6);
 }
 
+/* Fonts are set as CSS variables on <body> by next/font (src/lib/brand/fonts.ts). */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo,
+    Consolas, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ── Grounds ───────────────────────────────────────────────────────────── */
+
+/* Default dark page ground: ink-950 → charcoal-900. */
+@utility bg-ground {
+  background-color: var(--color-ink-950);
+  background-image: linear-gradient(
+    180deg,
+    var(--color-ink-950) 0%,
+    var(--color-charcoal-900) 100%
+  );
+}
+
+/* Forest depth: charcoal-900 → forest-800 (agency + dashboard backdrop). */
+@utility bg-ground-forest {
+  background-color: var(--color-charcoal-900);
+  background-image: linear-gradient(
+    160deg,
+    var(--color-charcoal-900) 0%,
+    var(--color-forest-800) 100%
+  );
+}
+
+/*
+ * CSS-only grain. Reproduces the legacy hero texture (a 700 KB PNG we do not
+ * ship) with an SVG feTurbulence tile blended over the element's own
+ * background. Works on any ground: `bg-ground bg-grain`.
+ * The pseudo-element sits at z-index -1 inside an isolated stacking context,
+ * so it paints above the background and below the element's content.
+ */
+@utility bg-grain {
+  position: relative;
+  isolation: isolate;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    background-repeat: repeat;
+    opacity: 0.16;
+    mix-blend-mode: soft-light;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Glass surface (dashboard). Border + inner highlight live in the shadow token. */
+@utility glass {
+  background-color: rgb(255 255 255 / 0.05);
+  border: 1px solid rgb(255 255 255 / 0.1);
+  box-shadow: var(--shadow-glass);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+/* Mono numerals for data */
+@utility numerals {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────── */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-ink-950);
+    color: var(--color-white);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background-color: var(--color-lime-500);
+    color: var(--color-ink-950);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-lime-500);
+    outline-offset: 2px;
+  }
+
+  /*
+   * Light grounds (Section variant="light" = sage-100, the lime CTAStrip)
+   * stamp data-tone="light"; lime-on-sage is ~1.2:1 and lime-on-lime is 1:1,
+   * so the ring switches to charcoal there (WCAG 1.4.11 / 2.4.11).
+   * Components must not hard-code `focus-visible:outline-lime-500` or this
+   * contextual rule loses to the utility layer.
+   */
+  [data-tone="light"] :focus-visible,
+  [data-tone="light"]:focus-visible {
+    outline-color: var(--color-charcoal-900);
+  }
+
+  /* Reduced motion: collapse every animation and transition. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }

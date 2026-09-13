@@ -85,7 +85,7 @@ export const piCarAccidentPack: NichePack = {
     {
       id: "pi-car.speed",
       principle:
-        "Car-accident intake must respond in under 5 minutes during ad hours — competitors and aggregators sign the case otherwise.",
+        "Car-accident intake must respond within minutes during ad hours — competitors and aggregators sign the case otherwise.",
       rationale:
         "The sub-niche is commoditized; speed is the only durable conversion edge.",
     },
@@ -105,7 +105,7 @@ export const piTruckAccidentPack: NichePack = {
   label: "PI — Truck accident",
   category: "legal",
   description:
-    "Low-volume, very-high-value PI. Precision targeting and patience beat volume plays; one signed case pays for months of spend.",
+    "Low-volume, very-high-value PI. Precision targeting and patience beat volume plays; the signal is too sparse to react to month by month.",
   extends: "legal-personal-injury",
   benchmarks: [
     {
@@ -177,7 +177,7 @@ export const piTruckAccidentPack: NichePack = {
     {
       id: "pi-truck.variance",
       principle:
-        "Judge truck-accident campaigns on 90-day windows minimum; never react to a signed-case-free month at this volume.",
+        "Judge truck-accident campaigns on at least a quarter of data; never react to a signed-case-free month at this volume.",
       rationale:
         "At ~1-3 signed cases a quarter, monthly optimization is statistically meaningless and destroys good campaigns.",
     },

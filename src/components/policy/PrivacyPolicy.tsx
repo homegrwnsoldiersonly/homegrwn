@@ -78,10 +78,14 @@ export function PrivacyPolicy({
 
           <Block title="Who sees it">
             <p>
-              The HOMEGRWN team. We do not sell, rent, or trade your details.
-              If we adopt a CRM or scheduling tool to manage replies, your
-              submission will be stored there under our account, and we will
-              name that provider here.
+              The HOMEGRWN team. A submission is relayed from this site to
+              our intake inbox by an automation workflow we operate; the
+              site&apos;s hosting provider handles the request in transit like
+              any web request, and we do not write your details to server
+              logs. We do not sell, rent, or trade your details. If we adopt a
+              CRM or scheduling tool to manage replies, your submission will
+              be stored there under our account, and we will name that
+              provider here.
             </p>
           </Block>
 

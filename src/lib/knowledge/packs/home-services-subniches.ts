@@ -14,7 +14,7 @@ export const hvacPack: NichePack = {
   label: "Home services — HVAC",
   category: "local-service",
   description:
-    "Weather-cyclical trade with a 50x job-value split between service calls and installs. Value tracking and seasonal pacing decide profitability.",
+    "Weather-cyclical trade with a job-value split between service calls and installs wide enough to break value-blind bidding. Value tracking and seasonal pacing decide profitability.",
   extends: "home-services",
   benchmarks: [
     {

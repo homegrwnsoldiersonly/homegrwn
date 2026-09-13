@@ -324,3 +324,24 @@ describe("control case: a disciplined PI account", () => {
     expect(report.findings.length).toBeLessThan(messy.findings.length);
   });
 });
+
+describe("public-surface strings carry no numerals (claims gate)", () => {
+  // NichePacks / OptimizesTo on the Ads Driver site read these fields from
+  // the registry. docs/content/claims.md verifies nothing yet, so a digit or
+  // a percent sign in any of them would ship an unverified benchmark as
+  // public copy. Numbers belong in `benchmarks`, `conversionModel` ranges, and
+  // `rationale` — fields the site never renders.
+  const NUMERIC = /[0-9%]/;
+  for (const pack of Object.values(PACKS)) {
+    it(`"${pack.id}" label, description, northStar, guardrail principles`, () => {
+      expect(pack.label, "label").not.toMatch(NUMERIC);
+      expect(pack.description, "description").not.toMatch(NUMERIC);
+      if (pack.conversionModel) {
+        expect(pack.conversionModel.northStar, "northStar").not.toMatch(NUMERIC);
+      }
+      for (const g of pack.guardrails) {
+        expect(g.principle, `guardrail ${g.id}`).not.toMatch(NUMERIC);
+      }
+    });
+  }
+});

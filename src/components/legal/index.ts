@@ -1,0 +1,18 @@
+export { AttorneyAdvertisingNote } from "./AttorneyAdvertisingNote";
+export type { AttorneyAdvertisingNoteProps } from "./AttorneyAdvertisingNote";
+export { LegalFaq } from "./LegalFaq";
+export type { LegalFaqProps } from "./LegalFaq";
+export { LegalHero } from "./LegalHero";
+export type { LegalHeroProps } from "./LegalHero";
+export { LegalHowItWorks } from "./LegalHowItWorks";
+export type { LegalHowItWorksProps } from "./LegalHowItWorks";
+export { LegalIcon } from "./LegalIcon";
+export type { LegalIconProps } from "./LegalIcon";
+export { LegalOffer } from "./LegalOffer";
+export type { LegalOfferProps } from "./LegalOffer";
+export { LegalPains } from "./LegalPains";
+export type { LegalPainsProps } from "./LegalPains";
+export { LegalProof } from "./LegalProof";
+export type { LegalProofProps } from "./LegalProof";
+export { LegalRelated } from "./LegalRelated";
+export type { LegalRelatedProps } from "./LegalRelated";

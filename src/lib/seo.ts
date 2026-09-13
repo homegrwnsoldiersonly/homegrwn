@@ -176,7 +176,7 @@ export function agencyJsonLd() {
         "@id": `${SURFACE_URLS.agency}/#service`,
         name: "Growth engineering for home services and legal",
         description:
-          "Ads, landing pages, tracking, and AI follow-up built and run as one system for trades and personal-injury firms. No contracts.",
+          "Ads, landing pages, tracking, and automated follow-up built and run as one system for trades and personal-injury firms. No contracts.",
         serviceType: "Digital advertising management",
         provider: { "@id": ORG_ID },
         areaServed: "US",

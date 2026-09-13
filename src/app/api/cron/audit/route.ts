@@ -12,15 +12,23 @@
  * HistoryStore adapter is dropped in). The audit output itself is unaffected.
  */
 
+import { timingSafeEqual } from "node:crypto";
 import type { NextRequest } from "next/server";
 import { getDataSource } from "@/lib/ads";
 import { FsHistoryStore } from "@/lib/history/fs-store";
 import { runScheduledAudit } from "@/lib/history/runner";
 
+/** Constant-time bearer check (length is compared first, then bytes). */
+function bearerMatches(header: string | null, secret: string): boolean {
+  const expected = Buffer.from(`Bearer ${secret}`, "utf8");
+  const given = Buffer.from(header ?? "", "utf8");
+  return given.length === expected.length && timingSafeEqual(given, expected);
+}
+
 export async function GET(req: NextRequest): Promise<Response> {
   const secret = process.env.CRON_SECRET;
   if (secret) {
-    if (req.headers.get("authorization") !== `Bearer ${secret}`) {
+    if (!bearerMatches(req.headers.get("authorization"), secret)) {
       return Response.json({ error: "unauthorized" }, { status: 401 });
     }
   } else if (process.env.NODE_ENV === "production") {
