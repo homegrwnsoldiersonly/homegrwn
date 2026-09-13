@@ -38,7 +38,7 @@ Sampled from the legacy CSS. Names are the ones every surface must use.
 
 Rules:
 - Dark-first. Default page ground is `ink-950` → `charcoal-900` gradient with
-  the grain texture (`public/brand/legacy/hero-grain-charcoal.png` as reference —
+  the grain texture (`docs/assets/hero-grain-charcoal.reference.png` as reference (kept out of public/ on purpose) —
   reproduce with CSS noise, don't ship the 700 KB PNG).
 - `lime-500` is the only saturated color. One accent per viewport. Never use it
   for body text on light backgrounds (contrast fails); use `charcoal-900`.
@@ -60,11 +60,11 @@ Rules:
 The user chose TypeUI theme *directions*. Until TypeUI MCP is authorized (see
 `docs/build-log.md`), these are implemented natively with the tokens above:
 
-| Surface | Route group | TypeUI direction | Native interpretation |
+| Surface | Folder (`src/app/`) | TypeUI direction | Native interpretation |
 |---|---|---|---|
-| Agency site (homegrwnagency.com) | `(agency)` | **Forest** (or Mars) | Organic dark: `charcoal-900`/`forest-800` grounds, grain texture, generous whitespace, editorial serif *not used* — stays sans. Lime as growth accent. Rounded-2xl cards, soft 1px `charcoal-700` borders. |
-| Ads Driver product site | `(ads-driver)` | **Mars × Perspective** | Bolder, more "product": `ink-950` ground, large numerals, isometric/3D depth cues (layered translucent planes, subtle perspective transforms on hero art), sharper radii (xl), stronger contrast, lime data-glow. |
-| Dashboard / reporting | `(app)` | **Glassmorphism** (over Material) | Translucent panels (`bg-white/5`, `backdrop-blur-xl`, 1px `white/10` border, inner highlight), layered over the charcoal→forest gradient. Dense data, mono numerals, lime for positive deltas, a restrained red for negative. Motion: 150–200ms ease-out only. |
+| Agency site (homegrwndigital.com) | `agency/` | **Forest** (or Mars) | Organic dark: `charcoal-900`/`forest-800` grounds, grain texture, generous whitespace, editorial serif *not used* — stays sans. Lime as growth accent. Rounded-2xl cards, soft 1px `charcoal-700` borders. |
+| Ads Driver product site | `ads/` | **Mars × Perspective** | Bolder, more "product": `ink-950` ground, large numerals, isometric/3D depth cues (layered translucent planes, subtle perspective transforms on hero art), sharper radii (xl), stronger contrast, lime data-glow. |
+| Dashboard / reporting | `app/` | **Glassmorphism** (over Material) | Translucent panels (`bg-white/5`, `backdrop-blur-xl`, 1px `white/10` border, inner highlight), layered over the charcoal→forest gradient. Dense data, mono numerals, lime for positive deltas, a restrained red for negative. Motion: 150–200ms ease-out only. |
 
 ## Imagery
 
