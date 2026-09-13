@@ -167,7 +167,7 @@ function SelectField({
       <span className="sr-only sm:not-sr-only">{label}</span>
       <span className="relative">
         <select value={value} onChange={(e) => onChange(e.target.value)} className={className}>
-          <option value="">All {label.toLowerCase()}s</option>
+          <option value="">All {plural(label.toLowerCase())}</option>
           {options.map((o) => (
             <option key={o.value} value={o.value}>
               {o.label}
@@ -187,4 +187,9 @@ function SelectField({
       </span>
     </label>
   );
+}
+
+/** English plural for filter labels ("category" → "categories"). */
+function plural(word: string): string {
+  return /[^aeiou]y$/i.test(word) ? word.slice(0, -1) + "ies" : word + "s";
 }
