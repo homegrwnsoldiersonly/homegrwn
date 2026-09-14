@@ -6,6 +6,7 @@ import {
   surfaceFromHost,
   surfacePrefixOf,
   toInternalPath,
+  canonicalRedirect,
 } from "./surface";
 
 describe("surfaceFromHost", () => {
@@ -97,5 +98,29 @@ describe("isMetadataImagePath", () => {
     expect(isMetadataImagePath("/agency/niches/septic")).toBe(false);
     expect(isMetadataImagePath("/opengraph-image")).toBe(false);
     expect(isMetadataImagePath("/agency/opengraph-image/x")).toBe(false);
+  });
+});
+
+describe("canonicalRedirect", () => {
+  it("301s legacy, www and alias hosts to the canonical surface URL, preserving path + query", () => {
+    expect(canonicalRedirect("homegrwnagency.com", "/niches/septic", "?utm=x")).toBe(
+      "https://homegrwndigital.com/niches/septic?utm=x",
+    );
+    expect(canonicalRedirect("www.homegrwndigital.com", "/")).toBe("https://homegrwndigital.com/");
+    expect(canonicalRedirect("homegrwn.io", "/pricing")).toBe(
+      "https://adsdriver.homegrwndigital.com/pricing",
+    );
+    expect(canonicalRedirect("app.homegrwnagency.com:443", "/findings")).toBe(
+      "https://app.homegrwndigital.com/findings",
+    );
+  });
+
+  it("returns null for canonical and neutral hosts", () => {
+    expect(canonicalRedirect("homegrwndigital.com", "/")).toBeNull();
+    expect(canonicalRedirect("adsdriver.homegrwndigital.com", "/faq")).toBeNull();
+    expect(canonicalRedirect("localhost:3000", "/")).toBeNull();
+    expect(canonicalRedirect("ads.localhost:3000", "/")).toBeNull();
+    expect(canonicalRedirect("homegrwn-abc.vercel.app", "/")).toBeNull();
+    expect(canonicalRedirect(null, "/")).toBeNull();
   });
 });

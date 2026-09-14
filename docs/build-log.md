@@ -2,6 +2,23 @@
 
 Decisions and state, newest first. This is the documentation Nathan asked for.
 
+## 2026-09-14 — Canonical-host 301 + Ads Driver domain analysis
+
+- **Gap closed:** legacy/`www`/alias hosts were *served*, never redirected. `canonicalRedirect()`
+  in `src/lib/surface.ts` now 301s any non-canonical production host to `SURFACE_URLS[surface]`
+  (path + query preserved); neutral hosts (localhost, `*.vercel.app`) untouched. Tested.
+- **Ads Driver domain — recommendation: keep `adsdriver.homegrwndigital.com` for now.**
+  Facts: `adsdriver.ai` is a LIVE early-access product ("AdsDriver.AI — Your Meta ads, on
+  autopilot", © 2026) in the same category; `adsdriver.com` is registered but dead. Every
+  standalone "adsdriver" domain (`ads-driver.com` $11.25, `adsdriver.io` $30, `.co`, `.app`,
+  `getadsdriver.com`…) is available but collides verbally with adsdriver.ai, and a hyphenated
+  `.com` leaks spoken referrals to the unhyphenated owner. The cross-referral goal is served
+  by the "by HOMEGRWN" / "Ads Driver" nav + footer links, not by the domain. A standalone
+  product domain is the right move only when the product carries its own ad spend — and
+  then the *name* should be checked first (USPTO + live-competitor sweep), with the domain
+  following the name. Because aliases 301 to `SURFACE_URLS`, cutting over later is a
+  one-line change plus DNS.
+
 ## 2026-09-13 — Domain cutover: homegrwnagency.com → homegrwndigital.com
 
 The brand domain moved. `homegrwndigital.com` was purchased on IONOS today

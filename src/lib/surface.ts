@@ -118,6 +118,31 @@ export function surfaceFromHost(
   return null;
 }
 
+/** Host of the canonical URL per surface (derived from SURFACE_URLS). */
+function canonicalHost(surface: Surface): string {
+  return new URL(SURFACE_URLS[surface]).host;
+}
+
+/**
+ * If `hostHeader` names a surface through a NON-canonical production host
+ * (legacy homegrwnagency.com domains, `www.`, alias domains such as
+ * homegrwn.io), the absolute URL the request must 301 to — path and query
+ * preserved. Canonical hosts and neutral hosts (localhost, *.localhost,
+ * *.vercel.app) return null. Changing SURFACE_URLS re-points every alias.
+ */
+export function canonicalRedirect(
+  hostHeader: string | null | undefined,
+  pathname: string,
+  search = "",
+): string | null {
+  const host = hostname(hostHeader);
+  if (!host || host.endsWith(".localhost")) return null;
+  const surface = surfaceFromHost(hostHeader);
+  if (!surface) return null;
+  if (host === canonicalHost(surface)) return null;
+  return `${SURFACE_URLS[surface]}${pathname}${search}`;
+}
+
 /** If `pathname` starts with a reserved surface prefix, which surface. */
 export function surfacePrefixOf(pathname: string): Surface | null {
   for (const s of SURFACES) {

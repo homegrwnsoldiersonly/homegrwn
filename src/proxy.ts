@@ -30,6 +30,7 @@ import {
   surfacePrefixOf,
   toInternalPath,
   type Surface,
+  canonicalRedirect,
 } from "@/lib/surface";
 
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
@@ -52,6 +53,15 @@ export function proxy(request: NextRequest) {
   // 0. Generated metadata images live under the surface folder by design
   //    (/agency/opengraph-image) — serve them, never redirect them.
   if (isMetadataImagePath(pathname)) return NextResponse.next();
+
+  // 0.5 Non-canonical production host (legacy domain, www., alias domain)
+  //     → permanent redirect to the canonical host, path + query preserved.
+  const canonical = canonicalRedirect(
+    request.headers.get("host"),
+    pathname,
+    nextUrl.search,
+  );
+  if (canonical) return NextResponse.redirect(canonical, 301);
 
   // 1. Reserved prefix typed directly → redirect to the clean URL.
   const direct = surfacePrefixOf(pathname);

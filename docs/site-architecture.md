@@ -69,7 +69,10 @@ rewrites to the matching surface folder. Resolution order (first match wins):
    `app.homegrwndigital.com` → app, `adsdriver.homegrwndigital.com` / `homegrwn.io` →
    ads) or a `<surface>.localhost` subdomain (`app.localhost:3000`, `ads.localhost:3000`).
    The old `homegrwnagency.com` hosts stay mapped to the same surfaces as legacy
-   entries so a 301 window is possible; drop them after 2026-10-17.
+   entries and — like `www.` and alias domains such as `homegrwn.io` — are
+   **301'd to the canonical host** in `SURFACE_URLS` by `canonicalRedirect()`
+   (path + query preserved). Changing `SURFACE_URLS` re-points every alias.
+   Drop the legacy entries after 2026-10-17.
 2. **`?surface=agency|ads|app`** query (aliases: `ads-driver`, `adsdriver`, `dashboard`).
    Persisted in the `hg_surface` cookie (30 days) so subsequent clean-URL navigations
    stay on that surface. This is how every surface is reviewable on `*.vercel.app`.
